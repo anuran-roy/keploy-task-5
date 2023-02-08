@@ -41,9 +41,11 @@ app.get("/get_new_joke", async (api_req, api_res) => {
 });
 
 app.get("/get_joke_from_db", async (api_req, api_res) => {
-    body_json = api_req.params;
+    body_json = api_req.query;
+    jokeId = body_json.joke_id;
+    console.log(`Joke ID = ${jokeId}`);
     // api_res.send(JSON.stringify({ "message": "Body Parsed!", "body": body_json }));
-    if (body_json.joke_id == null) {
+    if (jokeId == null) {
         JokesModel.count().exec(function (err, count) {
 
             // Get a random entry
@@ -58,7 +60,7 @@ app.get("/get_joke_from_db", async (api_req, api_res) => {
                 })
         })
     } else {
-        JokesModel.findOne({}, (err, joke) => {
+        JokesModel.findOne({joke_id: body_json.joke_id}, (err, joke) => {
             if (err) {
                 api_res.send({ "message": "Error!", "error": err }, 500);
             } else if (joke == null) {
